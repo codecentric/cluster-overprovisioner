@@ -1,0 +1,152 @@
+{{- if .Values.cpa.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }} 
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["list", "watch"]
+  {{- if .Values.cpa.rbac.podSecurityPolicy.enabled }}
+  - apiGroups: ["policy"]
+    resourceNames: [{{ include "cluster-overprovisioner.cpa.fullname" . }}]
+    resources: ["podsecuritypolicies"]
+    verbs: ["use"]
+  {{- end}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  namespace: {{ include "cluster-overprovisioner.cpa.target.namespace" . }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }} 
+rules:
+  - apiGroups: [""]
+    resources: ["replicationcontrollers/scale"]
+    verbs: ["get", "update"]
+  - apiGroups: ["extensions","apps"]
+    resources: ["deployments/scale", "replicasets/scale"]
+    verbs: ["get", "update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "create", "update", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cluster-overprovisioner.cpa.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  namespace: {{ include "cluster-overprovisioner.cpa.target.namespace" . }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cluster-overprovisioner.cpa.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end -}}
+{{- if and (not .Values.cpa.rbac.create) .Values.cpa.rbac.clusterRoleName }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cluster-overprovisioner.cpa.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Values.cpa.rbac.clusterRoleName }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end -}}
+{{- if and (not .Values.cpa.rbac.create) .Values.cpa.rbac.roleName }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  namespace: {{ .Release.Name | quote }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cluster-overprovisioner.cpa.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: {{ .Values.cpa.rbac.roleName }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end -}}
+{{- if .Values.cpa.rbac.podSecurityPolicy.enabled }}
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }}
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  fsGroup:
+{{- if .Values.cpa.securityContext.runAsNonRoot }}
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+{{- else }}
+    rule: RunAsAny
+{{- end }}
+  readOnlyRootFilesystem: true
+  runAsUser:
+{{- if .Values.cpa.securityContext.runAsNonRoot }}
+    rule: MustRunAsNonRoot
+{{- else }}
+    rule: RunAsAny
+{{- end }}
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+{{- if .Values.cpa.securityContext.runAsNonRoot }}
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+{{- else }}
+    rule: RunAsAny
+{{- end }}
+  volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - projected
+  - secret
+{{- end -}}

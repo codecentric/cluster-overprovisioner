@@ -1,0 +1,49 @@
+{{- if .Values.op.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cluster-overprovisioner.op.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.op.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "cluster-overprovisioner.op.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.op.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cluster-overprovisioner.op.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.op.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cluster-overprovisioner.op.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.op.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "cluster-overprovisioner.op.name" . }}
+          securityContext:
+            {{- toYaml .Values.op.securityContext | nindent 12 }}
+          image: "{{ .Values.op.image.repository }}:{{ .Values.op.image.tag }}"
+          imagePullPolicy: {{ .Values.op.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.op.resources | nindent 12 }}
+      {{- with .Values.op.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.op.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.op.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

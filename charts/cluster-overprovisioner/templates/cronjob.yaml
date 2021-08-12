@@ -1,0 +1,44 @@
+{{- $labels := include "cluster-overprovisioner.labels" . -}}
+{{- $serviceAccountName := include "cluster-overprovisioner.cpa.serviceAccountName" . -}}
+{{- $repository := .Values.cronJob.image.repository -}}
+{{- $tag := .Values.cronJob.image.tag -}}
+{{- $pullPolicy := .Values.cronJob.image.pullPolicy -}}
+{{- $failedJobsHistoryLimit := .Values.cronJob.failedJobsHistoryLimit -}}
+{{- $successfulJobsHistoryLimit := .Values.cronJob.successfulJobsHistoryLimit -}}
+{{- range $schedule := .Values.schedules }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-cas-{{- $schedule.name }}
+  labels: {{ $labels | nindent 4 }}
+spec:
+  failedJobsHistoryLimit: {{ $failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ $successfulJobsHistoryLimit }}
+  schedule: {{ $schedule.cronTimeExpression | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels: {{ $labels | nindent 12 }}
+        spec:
+          serviceAccountName: {{ $serviceAccountName }}
+          containers:
+          - image: "{{ $repository }}:{{ $tag }}"
+            imagePullPolicy: "{{ $pullPolicy }}"
+            name: {{ $schedule.name }}
+            command: ["/app/configmap.sh"]
+            volumeMounts:
+              - name: script
+                mountPath: /app/
+              - name: tmp
+                mountPath: /tmp/
+          restartPolicy: Never
+          volumes:
+            - name: script
+              configMap:
+                name: cas-schedule-script-{{- $schedule.name }}
+                defaultMode: 0777
+            - name: tmp
+              emptyDir: {}
+---
+{{- end }}

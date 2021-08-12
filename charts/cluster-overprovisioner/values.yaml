@@ -1,0 +1,177 @@
+# Default values for cluster-overprovisioner.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+cpa:
+  image:
+    # Change to official image asa the PR https://github.com/kubernetes-sigs/cluster-proportional-autoscaler/pull/111 is merged and released
+    repository: freddyfroehlich/cpa-dirty
+    pullPolicy: IfNotPresent
+    tag: latest 
+
+  extraArgs:
+    - --logtostderr=true
+    - --v=2
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the.cpa.fullname template
+    name: ""
+    automountServiceAccountToken: true
+
+  target:
+    # Either this target must be set or op.enabled must be true, otherwise the cpa will fail
+    # Must fit the schema <resource-type>/<resource-name> (e.g. deployment/testdeployment)  
+    name: ""
+    namespace: ""
+
+  rbac:
+    create: true
+    # clusterRoleName:
+    podSecurityPolicy:
+      enabled: false
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true 
+    runAsNonRoot: true
+    privileged: false
+    capabilities:
+      drop:
+        - ALL
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+op:
+  enabled: true
+  image:
+    repository: k8s.gcr.io/pause
+    pullPolicy: IfNotPresent
+    tag: 3.2
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the.cpa.fullname template
+    name: ""
+    automountServiceAccountToken: false
+
+  rbac:
+    podSecurityPolicy:
+      enabled: false
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+    runAsGroup: 1000
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true 
+    runAsNonRoot: true
+    privileged: false
+    capabilities:
+      drop:
+        - ALL
+
+  resources:
+    {}
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+  
+  priorityClasses:
+    default:
+      enabled: false
+      value: 0
+      name: default
+
+    overprovision:
+      value: -1
+      name: overprovision
+
+cronJob:
+  image:
+    repository: freddyfroehlich/kubectlyq
+    pullPolicy: IfNotPresent
+    tag: 0.1.0-alpha
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+
+defaultConfig: 
+  ladder:
+    {
+      "nodesToReplicas":
+      [
+        [ 0,7 ],
+        [ 8,4 ],
+        [ 12,0 ]
+      ]
+    }
+
+schedules:
+  - name: night
+    cronTimeExpression: "0 18 * * 1-5" # disable overprovisioning Monday - Friday from 6pm
+    config:
+      ladder:
+        {
+          "nodesToReplicas":
+          [
+            [ 0,0 ]
+          ]
+        }
+  - name: day
+    cronTimeExpression: "0 7 * * 1-5" # enable overprovisioning Monday - Friday from 7am
+    config:
+      ladder:
+        {
+          "nodesToReplicas":
+          [
+            [ 0,7 ],
+            [ 8,4 ],
+            [ 12,0 ]
+          ]
+        }

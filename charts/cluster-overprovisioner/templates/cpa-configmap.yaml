@@ -1,0 +1,60 @@
+{{ if ne (len .Values.defaultConfig) 1 }}
+{{ fail "You need to specify exactly one config for the defaultConfig." }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cas-schedule-active
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }}
+data:
+  {{- range $key,$value := $.Values.defaultConfig }}
+  {{ $key }}: |-
+    {{ $value | mustToJson }} 
+  {{- end }}
+---
+{{- $labels := include "cluster-overprovisioner.cpa.labels" . -}}
+{{- $namespace := .Values.Namespace -}}
+{{- range $schedule := .Values.schedules }}
+{{- if ne (len $schedule.config) 1 }}
+{{ fail (printf "%s%s." "You need to specify exactly one config for schedule " $schedule.name) }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cas-schedule-{{- $schedule.name }}
+  labels: {{ $labels | nindent 4}}
+data:
+  {{- range $key,$value := $schedule.config }}
+  {{ $key }}: |-
+    {{ $value | mustToJson }} 
+  {{- end }}
+---
+{{- end }}
+{{- $labels := include "cluster-overprovisioner.labels" . -}}
+{{- $namespace := .Values.Namespace -}}
+{{- range $schedule := .Values.schedules }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cas-schedule-script-{{- $schedule.name }}
+  labels:
+    {{ $labels | nindent 4 }}
+data:
+  configmap.sh: |
+    #!/usr/bin/env sh
+
+    # This script replaces the currently active configmap with another available one.
+
+    set -o errexit
+    set -o nounset
+    set -o pipefail
+
+    main() {
+
+        kubectl get cm "cas-schedule-{{- $schedule.name }}" -n "{{ $namespace }}" -o yaml | yq e '.metadata.name = "cas-schedule-active"' - | kubectl replace --force -f -
+    }
+
+    main "$@"
+---
+{{- end }}
