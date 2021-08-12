@@ -1,4 +1,4 @@
-name: Build and push Docker image
+name: Build and push COP-Helper Docker image
 
 on:
   schedule:
@@ -30,20 +30,15 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1 
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            - ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-helper:latest
