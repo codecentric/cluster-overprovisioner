@@ -135,9 +135,9 @@ op:
 
 cronJob:
   image:
-    repository: freddyfroehlich/kubectlyq
-    pullPolicy: IfNotPresent
-    tag: 0.1.0-alpha
+    repository: ghcr.io/codecentric/cluster-overprovisioner-helper
+    pullPolicy: Always
+    tag: latest
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
