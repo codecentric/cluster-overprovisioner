@@ -18,7 +18,7 @@ jobs:
 
     permissions:
       contents: read
-      packages: write
+      packages: write|read
       
     steps:
       - name: Checkout
