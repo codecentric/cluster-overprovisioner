@@ -154,7 +154,7 @@ defaultConfig:
 
 schedules:
   - name: night
-    cronTimeExpression: "0 16 * * 1-5" # disable overprovisioning Monday - Friday from 6pm
+    cronTimeExpression: "0 16 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
     config:
       ladder:
         {
@@ -164,7 +164,7 @@ schedules:
             ]
         }
   - name: day
-    cronTimeExpression: "0 5 * * 1-5" # enable overprovisioning Monday - Friday from 7am
+    cronTimeExpression: "0 5 * * 1-5"  # enable overprovisioning Monday - Friday from 7am
     config:
       ladder:
         {
