@@ -153,7 +153,7 @@ defaultConfig:
     }
 
 # If you want to use the schedule-feature, specify as many schedules as you want.
-# Example of a schedule: 
+# Example of a schedule:
 # - name: night
 #  cronTimeExpression: "0 16 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
 #  config:
