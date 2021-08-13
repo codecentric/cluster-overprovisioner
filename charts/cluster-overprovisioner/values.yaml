@@ -7,10 +7,14 @@ cpa:
     repository: k8s.gcr.io/cpa/cluster-proportional-autoscaler
     pullPolicy: IfNotPresent
 <<<<<<< HEAD
+<<<<<<< HEAD
     tag: latest
 =======
     tag: 1.8.5 
 >>>>>>> eab1739 (Adjust default values)
+=======
+    tag: 1.8.5
+>>>>>>> 6a714c4 (Add editorconfig and newlines)
 
   extraArgs:
     - --logtostderr=true
