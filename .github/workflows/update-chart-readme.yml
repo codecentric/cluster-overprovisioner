@@ -17,7 +17,7 @@ jobs:
       - name: install helm-docs
         run: |
           curl -sSfLO https://github.com/norwoodj/helm-docs/releases/download/v1.5.0/helm-docs_1.5.0_Linux_x86_64.tar.gz
-          tar xvfz helm-docs_1.5.0_Linux_x86_64.tar.gz -c /tmp
+          tar xvfz helm-docs_1.5.0_Linux_x86_64.tar.gz -C /tmp
           rm -f helm-docs_1.5.0_Linux_x86_64.tar.gz 
           chmod +x /tmp/helm-docs
           mv /tmp/helm-docs /usr/local/bin/
