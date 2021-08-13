@@ -1,5 +1,6 @@
 name: Add updated Readme to PRs
-on:
+
+on: 
   pull_request:
     paths:
       - charts/**
@@ -21,8 +22,7 @@ jobs:
           chmod +x /usr/local/bin/helm-docs
       
       - name: generate updated chart readme
-        run: |
-          helm-docs
+        run: helm-docs
       
       - name: push updated chart readme:
         run: |
@@ -31,7 +31,3 @@ jobs:
           git add charts/cluster-overprovisioner/README.md
           git commit -m "Auto-Update Chart Readme"
           git push
-
-
-
-
