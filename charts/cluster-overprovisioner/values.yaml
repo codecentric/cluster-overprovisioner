@@ -95,7 +95,7 @@ op:
 
   rbac:
     podSecurityPolicy:
-      enabled: false
+      enabled: true
 
   podAnnotations: {}
 
