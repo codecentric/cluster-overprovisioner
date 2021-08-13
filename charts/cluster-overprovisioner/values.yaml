@@ -6,7 +6,7 @@ cpa:
     # Change to official image asa the PR https://github.com/kubernetes-sigs/cluster-proportional-autoscaler/pull/111 is merged and released
     repository: freddyfroehlich/cpa-dirty
     pullPolicy: IfNotPresent
-    tag: latest 
+    tag: latest
 
   extraArgs:
     - --logtostderr=true
@@ -28,7 +28,7 @@ cpa:
 
   target:
     # Either this target must be set or op.enabled must be true, otherwise the cpa will fail
-    # Must fit the schema <resource-type>/<resource-name> (e.g. deployment/testdeployment)  
+    # Must fit the schema <resource-type>/<resource-name> (e.g. deployment/testdeployment)
     name: ""
     namespace: ""
 
@@ -47,7 +47,7 @@ cpa:
 
   securityContext:
     allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true 
+    readOnlyRootFilesystem: true
     runAsNonRoot: true
     privileged: false
     capabilities:
@@ -102,7 +102,7 @@ op:
 
   securityContext:
     allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true 
+    readOnlyRootFilesystem: true
     runAsNonRoot: true
     privileged: false
     capabilities:
@@ -122,7 +122,7 @@ op:
   tolerations: []
 
   affinity: {}
-  
+
   priorityClasses:
     default:
       enabled: false
@@ -141,37 +141,37 @@ cronJob:
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
-defaultConfig: 
+defaultConfig:
   ladder:
     {
       "nodesToReplicas":
-      [
-        [ 0,7 ],
-        [ 8,4 ],
-        [ 12,0 ]
-      ]
+        [
+          [0, 7],
+          [8, 4],
+          [12, 0]
+        ]
     }
 
 schedules:
   - name: night
-    cronTimeExpression: "0 18 * * 1-5" # disable overprovisioning Monday - Friday from 6pm
+    cronTimeExpression: "0 18 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
     config:
       ladder:
         {
           "nodesToReplicas":
-          [
-            [ 0,0 ]
-          ]
+            [
+              [0, 0]
+            ]
         }
   - name: day
-    cronTimeExpression: "0 7 * * 1-5" # enable overprovisioning Monday - Friday from 7am
+    cronTimeExpression: "0 7 * * 1-5"  # enable overprovisioning Monday - Friday from 7am
     config:
       ladder:
         {
           "nodesToReplicas":
-          [
-            [ 0,7 ],
-            [ 8,4 ],
-            [ 12,0 ]
-          ]
+            [
+              [0, 7],
+              [8, 4],
+              [12, 0]
+            ]
         }
