@@ -4,9 +4,13 @@
 cpa:
   image:
     # Change to official image asa the PR https://github.com/kubernetes-sigs/cluster-proportional-autoscaler/pull/111 is merged and released
-    repository: freddyfroehlich/cpa-dirty
+    repository: k8s.gcr.io/cpa/cluster-proportional-autoscaler
     pullPolicy: IfNotPresent
+<<<<<<< HEAD
     tag: latest
+=======
+    tag: 1.8.5 
+>>>>>>> eab1739 (Adjust default values)
 
   extraArgs:
     - --logtostderr=true
@@ -154,7 +158,11 @@ defaultConfig:
 
 schedules:
   - name: night
+<<<<<<< HEAD
     cronTimeExpression: "0 18 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
+=======
+    cronTimeExpression: "0 16 * * 1-5" # disable overprovisioning Monday - Friday from 6pm
+>>>>>>> eab1739 (Adjust default values)
     config:
       ladder:
         {
@@ -164,7 +172,11 @@ schedules:
             ]
         }
   - name: day
+<<<<<<< HEAD
     cronTimeExpression: "0 7 * * 1-5"  # enable overprovisioning Monday - Friday from 7am
+=======
+    cronTimeExpression: "0 5 * * 1-5" # enable overprovisioning Monday - Friday from 7am
+>>>>>>> eab1739 (Adjust default values)
     config:
       ladder:
         {
