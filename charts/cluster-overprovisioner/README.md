@@ -4,7 +4,7 @@
 
 Helm chart, that enables scheduled scaling of a target resource, intended to be add overprovisioning to an autoscaling k8s cluster.
 
-## Maintain
+## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
