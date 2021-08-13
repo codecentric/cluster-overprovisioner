@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 3 * * 1'
   push:
-    branch:
+    branches:
       - main
     paths:
       - 'Dockerfile'
