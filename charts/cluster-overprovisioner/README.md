@@ -1,6 +1,17 @@
 # cluster-overprovisioner
 Helm chart, that enables scheduled scaling of a target resource, intended to be add overprovisioning to an autoscaling k8s cluster.
 
+## Use the Chart
+
+```bash
+# Add Chart Repo
+helm repo add codecentric https://codecentric.github.io/cluster-overprovisioner
+helm repo update
+
+# Install the Chart with default values
+helm install my-release codecentric/cluster-overprovisioner
+```
+
 ## Configure CPA
 
 The cluster-proportional autoscaler deployed with this chart is configured using configmaps. It comes with a dummy default configuration:
