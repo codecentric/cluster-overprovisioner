@@ -24,7 +24,7 @@ jobs:
       - name: generate updated chart readme
         run: helm-docs
       
-      - name: push updated chart readme:
+      - name: push updated chart readme
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
