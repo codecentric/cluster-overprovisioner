@@ -5,7 +5,7 @@ kind: ClusterRole
 metadata:
   name: {{ include "cluster-overprovisioner.op.fullname" . }}
   labels:
-    {{- include "cluster-overprovisioner.op.labels" . | nindent 4 }} 
+    {{- include "cluster-overprovisioner.op.labels" . | nindent 4 }}
 rules:
   - apiGroups: ["policy"]
     resourceNames: [{{ include "cluster-overprovisioner.op.fullname" . }}]
