@@ -1,4 +1,4 @@
-# Overprovisioning Helm Chart
+# cluster-overprovisioner
 
 Helm Chart for Overprovisioning an autoscaling Kubernetes Cluster, based on the [Cluster Proportional Autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler) and the [Cluster Overprovisioning Helm Chart](https://github.com/deliveryhero/helm-charts/tree/master/stable/cluster-overprovisioner) from Delivery Hero.
 
@@ -22,3 +22,6 @@ To achieve the desired overprovisioning, a second component - called placeholder
 
 ## Constraints
 * Currently the Helm chart just supports the ladder mode as a control pattern for the Cluster Proportional Autoscaler.
+
+# HELM
+Find relevant information about the helm chart here: [README.md](charts/cluster-overprovisioner/README.md)
