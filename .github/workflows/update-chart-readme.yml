@@ -23,7 +23,7 @@ jobs:
           mv /tmp/helm-docs /usr/local/bin/
       
       - name: generate updated chart readme
-        run: helm-docs -o charts/cluster-overprovisioner/README.md 
+        run: helm-docs
       
       - name: push updated chart readme
         run: |
