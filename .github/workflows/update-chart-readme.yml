@@ -28,6 +28,5 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git add charts/cluster-overprovisioner/README.md
-          git commit -m "Auto-Update Chart Readme"
-          git push origin $GITHUB_REF
+          git commit -am "Auto-Update Chart Readme"
+          git push origin HEAD:$GITHUB_HEAD_REF
