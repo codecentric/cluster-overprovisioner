@@ -120,42 +120,6 @@ For every schedule a cronjob is created, that replaces the active config with th
 | schedules | [] | Please refer to [scheduler-config](#configure-schedules) | Configure a list of schedules, that used be created |
 ----------------------------------------------
 
-## Configure CPA
-
-The cluster-proportional autoscaler deployed with this chart is configured using configmaps. It comes with a dummy default configuration:
-```yaml
-ladder:
-  {
-    "nodesToReplicas":
-      [
-        [0, 1],  # if you have up to 4 nodes, scale resource to 1 replica
-        [5, 2],  # if you have less than 10 nodes but more than 4, scale resource to 2 replica
-        [10, 3]  # if more than 11 nodes, scale resource to 3 replica
-      ]
-  }
-```
-Please adapt this config to your needs.
-
-Please see the [cluster-proportional-autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler#control-patterns-and-configmap-formats) docs for more information on the individual modes.
-
-### configure-schedules
-If you need time-dependent configuration, you can use the `schedules`:
-```yaml
-schedules:
-- name: night
-  cronTimeExpression: "0 16 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
-  config:
-    ladder:
-      {
-        "nodesToReplicas":
-          [
-            [0, 0]
-          ]
-      }
-```
-
-For every schedule a cronjob is created, that replaces the active config with the config from the schedule.
-
 ## Maintainers
 
 | Name | Email |
