@@ -4,9 +4,9 @@
 cpa:
   image:
     # Change to official image asa the PR https://github.com/kubernetes-sigs/cluster-proportional-autoscaler/pull/111 is merged and released
-    repository: k8s.gcr.io/cpa/cluster-proportional-autoscaler
+    repository: freddyfroehlich/cpa-dirty
     pullPolicy: IfNotPresent
-    tag: 1.8.5
+    tag: latest
 
   extraArgs:
     - --logtostderr=true
