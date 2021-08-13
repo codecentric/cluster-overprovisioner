@@ -15,10 +15,6 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write,read
       
     steps:
       - name: Checkout
