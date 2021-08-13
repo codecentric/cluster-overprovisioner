@@ -1,103 +1,90 @@
 # cluster-overprovisioner
-
-![Version: 0.4.5](https://img.shields.io/badge/Version-0.4.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
-
 Helm chart, that enables scheduled scaling of a target resource, intended to be add overprovisioning to an autoscaling k8s cluster.
-
-## Maintain
-
-| Name | Email | Url |
-| ---- | ------ | --- |
-| tielou | thilo@wobker.co |  |
-| grieshaber | freddy.grieshaber+github@gmail.com |  |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| cpa.affinity | object | `{}` |  |
-| cpa.extraArgs[0] | string | `"--logtostderr=true"` |  |
-| cpa.extraArgs[1] | string | `"--v=2"` |  |
+| cpa.affinity | object | `{}` | PodAffinity of the cpa Pod |
+| cpa.extraArgs[0] | string | `"--logtostderr=true"` <br /> `"--v=2"` | Additional args for the cpa (refer to [cluster-proportional-autoscaler/README.md](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler#readme) for more information) |
 | cpa.fullnameOverride | string | `""` |  |
-| cpa.image.pullPolicy | string | `"IfNotPresent"` |  |
-| cpa.image.repository | string | `"freddyfroehlich/cpa-dirty"` |  |
-| cpa.image.tag | string | `"latest"` |  |
-| cpa.imagePullSecrets | list | `[]` |  |
+| cpa.image.pullPolicy | string | `"IfNotPresent"` | ImagePullPolicy |
+| cpa.image.repository | string | `"freddyfroehlich/cpa-dirty"` | Name of the image to be used for cpa (\<repo>/\<image>) |
+| cpa.image.tag | string | `"latest"` | Docker tag |
+| cpa.imagePullSecrets | list | `[]` | PullSecrets, if pulling from a private registry |
 | cpa.nameOverride | string | `""` |  |
-| cpa.nodeSelector | object | `{}` |  |
-| cpa.podAnnotations | object | `{}` |  |
+| cpa.nodeSelector | object | `{}` | NodeSelector of the cpa Pod |
+| cpa.podAnnotations | object | `{}` | Annotations to add to the cpa Pod |
 | cpa.podSecurityContext.fsGroup | int | `1000` |  |
 | cpa.podSecurityContext.runAsGroup | int | `1000` |  |
 | cpa.podSecurityContext.runAsUser | int | `1000` |  |
-| cpa.rbac.create | bool | `true` |  |
-| cpa.rbac.podSecurityPolicy.enabled | bool | `false` |  |
-| cpa.resources.limits.cpu | string | `"100m"` |  |
-| cpa.resources.limits.memory | string | `"128Mi"` |  |
-| cpa.securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| cpa.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| cpa.securityContext.privileged | bool | `false` |  |
-| cpa.securityContext.readOnlyRootFilesystem | bool | `true` |  |
-| cpa.securityContext.runAsNonRoot | bool | `true` |  |
-| cpa.serviceAccount.annotations | object | `{}` |  |
-| cpa.serviceAccount.automountServiceAccountToken | bool | `true` |  |
-| cpa.serviceAccount.create | bool | `true` |  |
-| cpa.serviceAccount.name | string | `""` |  |
-| cpa.target.name | string | `""` |  |
-| cpa.target.namespace | string | `""` |  |
-| cpa.tolerations | list | `[]` |  |
-| cronJob.failedJobsHistoryLimit | int | `1` |  |
-| cronJob.image.pullPolicy | string | `"Always"` |  |
-| cronJob.image.repository | string | `"ghcr.io/codecentric/cluster-overprovisioner-helper"` |  |
-| cronJob.image.tag | string | `"latest"` |  |
-| cronJob.successfulJobsHistoryLimit | int | `1` |  |
-| defaultConfig.ladder.nodesToReplicas[0][0] | int | `0` |  |
-| defaultConfig.ladder.nodesToReplicas[0][1] | int | `7` |  |
-| defaultConfig.ladder.nodesToReplicas[1][0] | int | `8` |  |
-| defaultConfig.ladder.nodesToReplicas[1][1] | int | `4` |  |
-| defaultConfig.ladder.nodesToReplicas[2][0] | int | `12` |  |
-| defaultConfig.ladder.nodesToReplicas[2][1] | int | `0` |  |
-| op.affinity | object | `{}` |  |
-| op.enabled | bool | `true` |  |
+| cpa.rbac.create | bool | `true` | Specifies whether RBAC-Ressources should be created |
+| cpa.rbac.podSecurityPolicy.enabled | bool | `false` | Specifies whether a PSP should be created |
+| cpa.resources.limits.cpu | string | `"100m"` | CPU Limit for cpa-Pod |
+| cpa.resources.limits.memory | string | `"128Mi"` | Memory Limit for cpa-Pod |
+| cpa.securityContext.allowPrivilegeEscalation | bool | `false` | Allow privilege escalation |
+| cpa.securityContext.capabilities.drop[0] | string | `"ALL"` | Capabilities to drop |
+| cpa.securityContext.privileged | bool | `false` | Run pod privileged |
+| cpa.securityContext.readOnlyRootFilesystem | bool | `true` | Mount FS read-only |
+| cpa.securityContext.runAsNonRoot | bool | `true` | Run pod as non-root user |
+| cpa.serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
+| cpa.serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
+| cpa.serviceAccount.automountServiceAccountToken | bool | `true` | Mount ServiceAccount-Token (true, because cpa accesses kube-api) |
+| cpa.serviceAccount.name | string | `""` | Name of the Service Account to use |
+| cpa.target.name | string | `Defaults to the op-deployment, if enabled.` | Name of the scalable-resource, that should be scaled by the cpa. Must be in form of `<resource-type>/<resource-name>` |
+| cpa.target.namespace | string | `Default to the op-namespace, if enabled.` | Namespace of the target resource |
+| cpa.tolerations | list | `[]` | Tolerations of the cpa Pod |
+| op.enabled | bool | `true` | Specifies, whether the default overprovisioning Deployment should be used. |
+| op.affinity | object | `{}` | PodAffinity of the cpa Pod |
 | op.fullnameOverride | string | `""` |  |
-| op.image.pullPolicy | string | `"IfNotPresent"` |  |
-| op.image.repository | string | `"k8s.gcr.io/pause"` |  |
-| op.image.tag | float | `3.2` |  |
-| op.imagePullSecrets | list | `[]` |  |
+| op.image.pullPolicy | string | `"IfNotPresent"` | ImagePullPolicy |
+| op.image.repository | string | `"k8s.gcr.io/pause"` | Image of the overprovisioning deployment |
+| op.image.tag | string | `"3.2"` | Docker tag |
+| op.imagePullSecrets | list | `[]` | PullSecrets, if pulling from a private registry |
 | op.nameOverride | string | `""` |  |
-| op.nodeSelector | object | `{}` |  |
-| op.podAnnotations | object | `{}` |  |
+| op.nodeSelector | object | `{}` | NodeSelector of op Pod |
+| op.podAnnotations | object | `{}` | Annotations to add to the op Pod |
 | op.podSecurityContext.fsGroup | int | `1000` |  |
 | op.podSecurityContext.runAsGroup | int | `1000` |  |
 | op.podSecurityContext.runAsUser | int | `1000` |  |
-| op.priorityClasses.default.enabled | bool | `false` |  |
-| op.priorityClasses.default.name | string | `"default"` |  |
-| op.priorityClasses.default.value | int | `0` |  |
-| op.priorityClasses.overprovision.name | string | `"overprovision"` |  |
-| op.priorityClasses.overprovision.value | int | `-1` |  |
-| op.rbac.podSecurityPolicy.enabled | bool | `false` |  |
-| op.resources | object | `{}` |  |
-| op.securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| op.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| op.securityContext.privileged | bool | `false` |  |
-| op.securityContext.readOnlyRootFilesystem | bool | `true` |  |
-| op.securityContext.runAsNonRoot | bool | `true` |  |
-| op.serviceAccount.annotations | object | `{}` |  |
-| op.serviceAccount.automountServiceAccountToken | bool | `false` |  |
-| op.serviceAccount.create | bool | `true` |  |
-| op.serviceAccount.name | string | `""` |  |
-| op.tolerations | list | `[]` |  |
-| schedules[0].config.ladder.nodesToReplicas[0][0] | int | `0` |  |
-| schedules[0].config.ladder.nodesToReplicas[0][1] | int | `0` |  |
-| schedules[0].cronTimeExpression | string | `"0 16 * * 1-5"` |  |
-| schedules[0].name | string | `"night"` |  |
-| schedules[1].config.ladder.nodesToReplicas[0][0] | int | `0` |  |
-| schedules[1].config.ladder.nodesToReplicas[0][1] | int | `7` |  |
-| schedules[1].config.ladder.nodesToReplicas[1][0] | int | `8` |  |
-| schedules[1].config.ladder.nodesToReplicas[1][1] | int | `4` |  |
-| schedules[1].config.ladder.nodesToReplicas[2][0] | int | `12` |  |
-| schedules[1].config.ladder.nodesToReplicas[2][1] | int | `0` |  |
-| schedules[1].cronTimeExpression | string | `"0 5 * * 1-5"` |  |
-| schedules[1].name | string | `"day"` |  |
-
+| op.priorityClasses.default.enabled | bool | `false` | Specifies, whether a default priorityClass should be created |
+| op.priorityClasses.default.name | string | `"default"` | Name of the default priorityClass |
+| op.priorityClasses.default.value | int | `0` | Priority of the default priorityClass |
+| op.priorityClasses.overprovision.name | string | `"overprovision"` | Name of the overprovisioning priorityClass |
+| op.priorityClasses.overprovision.value | int | `-1` | Priority of the default priorityClass (intended to by lower than `op.priorityClasses.default.value`) |
+| op.rbac.podSecurityPolicy.enabled | bool | `false` | Specifies whether a PSP should be created |
+| op.resources | object | `{}` | Resource-information for the op Deployment |
+| op.securityContext.allowPrivilegeEscalation | bool | `false` | Allow privilege escalation |
+| op.securityContext.capabilities.drop[0] | string | `"ALL"` | `"ALL"` | Capabilities to drop |
+| op.securityContext.privileged | bool | `false` | Run pod privileged |
+| op.securityContext.readOnlyRootFilesystem | bool | `true` | Mount FS read-only |
+| op.securityContext.runAsNonRoot | bool | `true` | Run pod as non-root user |
+| op.serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
+| op.serviceAccount.annotations | object | `{}` | Mount ServiceAccount-Token (true, because cpa accesses kube-api)|
+| op.serviceAccount.automountServiceAccountToken | bool | `false` | Annotations to add to the service account |
+| op.serviceAccount.name | string | `""` | Name of the Service Account to use  |
+| op.tolerations | list | `[]` | Tolerations of the cpa Pod |
+| cronJob.failedJobsHistoryLimit | int | `1` | Specifies, how many failed Jobs should be kept |
+| cronJob.image.pullPolicy | string | `"Always"` | ImagePullPolicy |
+| cronJob.image.repository | string | `"ghcr.io/codecentric/cluster-overprovisioner-helper"` | Image used to executed the cronjob |
+| cronJob.image.tag | string | `"latest"` | Docker tag |
+| cronJob.successfulJobsHistoryLimit | int | `1` | Specifies, how many successfull Jobs should be kept |
+| defaultConfig | `{}` | Please refer to [default-config](#default) | Config to be used as the default config (see [cpa-config](#configure-cpa)) |
+| schedules | [] | Please refer to [scheduler-config](#configure-schedules) | Configure a list of schedules, that used be created |
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.5.0](https://github.com/norwoodj/helm-docs/releases/v1.5.0)
+
+## Configure CPA
+
+The cluster-proportional autoscaler deployed with this chart is configured using configmaps.
+
+### default
+
+### configure-schedules
+
+
+## Maintainers
+
+| Name | Email |
+| ---- | ------ |
+| tielou | thilo@wobker.co |
+| grieshaber | freddy.grieshaber+github@gmail.com |

@@ -85,7 +85,7 @@ op:
     # Annotations to add to the service account
     annotations: {}
     # The name of the service account to use.
-    # If not set and create is true, a name is generated using the.cpa.fullname template
+    # If not set and create is true, a name is generated using the.op.fullname template
     name: ""
     automountServiceAccountToken: false
 
