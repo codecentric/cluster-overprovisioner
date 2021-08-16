@@ -8,5 +8,5 @@ RUN curl -fsSLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/releas
     chmod +x kubectl && \
     mv kubectl /usr/local/bin/
 
-RUN addgroup -S cop && adduser -S cop -G cop
+RUN addgroup -g 1001 -S cop && adduser -u 1001 -S cop -G cop
 USER cop
