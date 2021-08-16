@@ -22,15 +22,15 @@ spec:
           labels: {{ $labels | nindent 12 }}
         spec:
           serviceAccountName: {{ $serviceAccountName }}
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+            fsGroup: 1001
           containers:
           - image: "{{ $repository }}:{{ $tag }}"
             imagePullPolicy: "{{ $pullPolicy }}"
             name: {{ $schedule.name }}
             command: ["/app/configmap.sh"]
-            securityContext:
-              runAsUser: 1001
-              runAsGroup: 1001
-              fsGroup: 1001
             volumeMounts:
               - name: script
                 mountPath: /app/
