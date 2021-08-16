@@ -27,6 +27,10 @@ spec:
             imagePullPolicy: "{{ $pullPolicy }}"
             name: {{ $schedule.name }}
             command: ["/app/configmap.sh"]
+            securityContext:
+              runAsUser: 1001
+              runAsGroup: 1001
+              fsGroup: 1001
             volumeMounts:
               - name: script
                 mountPath: /app/
