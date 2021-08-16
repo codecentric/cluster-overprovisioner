@@ -85,7 +85,7 @@ op:
     # Annotations to add to the service account
     annotations: {}
     # The name of the service account to use.
-    # If not set and create is true, a name is generated using the.cpa.fullname template
+    # If not set and create is true, a name is generated using the.op.fullname template
     name: ""
     automountServiceAccountToken: false
 
@@ -146,32 +146,22 @@ defaultConfig:
     {
       "nodesToReplicas":
         [
-          [0, 7],
-          [8, 4],
-          [12, 0]
+          [0, 1],
+          [5, 2],
+          [10, 0]
         ]
     }
 
-schedules:
-  - name: night
-    cronTimeExpression: "0 16 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
-    config:
-      ladder:
-        {
-          "nodesToReplicas":
-            [
-              [0, 0]
-            ]
-        }
-  - name: day
-    cronTimeExpression: "0 5 * * 1-5"  # enable overprovisioning Monday - Friday from 7am
-    config:
-      ladder:
-        {
-          "nodesToReplicas":
-            [
-              [0, 7],
-              [8, 4],
-              [12, 0]
-            ]
-        }
+# If you want to use the schedule-feature, specify as many schedules as you want.
+# Example of a schedule:
+# - name: night
+#  cronTimeExpression: "0 16 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
+#  config:
+#    ladder:
+#      {
+#        "nodesToReplicas":
+#          [
+#            [0, 0]
+#          ]
+#      }
+schedules: []
