@@ -3,6 +3,27 @@ entries:
   cluster-overprovisioner:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2021-08-16T07:48:20.073689283Z"
+    description: Helm chart, that enables scheduled scaling of a target resource, intended to be add overprovisioning to an autoscaling k8s cluster.
+    digest: 52ae46bc45cb73b98906602c7238413dcbe85a629f8fff185fadce63f87be5d5
+    keywords:
+    - cluster-autoscaler
+    - overprovisioning
+    - cluster-proportional-autoscaler
+    - scheduled-overprovisioning
+    - cpa
+    maintainers:
+    - email: thilo@wobker.co
+      name: tielou
+    - email: freddy.grieshaber+github@gmail.com
+      name: grieshaber
+    name: cluster-overprovisioner
+    type: application
+    urls:
+    - https://github.com/codecentric/cluster-overprovisioner/releases/download/cluster-overprovisioner-0.4.8/cluster-overprovisioner-0.4.8.tgz
+    version: 0.4.8
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2021-08-16T07:37:50.616612972Z"
     description: Helm chart, that enables scheduled scaling of a target resource, intended to be add overprovisioning to an autoscaling k8s cluster.
     digest: 75e13bce2004bab138192928f328a4e1a00bb128c7bc089146558665b23a6746
