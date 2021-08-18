@@ -1,0 +1,38 @@
+# Example schedule configuration, that adds Overprovisioning during the working hours
+# It reduces the amount of the overprovisiong to 0 at night and over the Weekend
+
+defaultConfig:
+  ladder:
+    {
+      "nodesToReplicas":
+        [
+          [0, 1],
+          [5, 2],
+          [10, 0]
+        ]
+    }
+
+schedules:
+- name: night-and-weekend
+  cronTimeExpression: "0 18 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm UTC
+  config:
+    ladder:
+      {
+        "nodesToReplicas":
+          [
+            [0, 0]
+          ]
+      }
+
+- name: day
+  cronTimeExpression: "0 8 * * 1-5"  # enable overprovisioning Monday - Friday from 8am UTC
+  config:
+    ladder:
+      {
+        "nodesToReplicas":
+          [
+            [0, 1],
+            [5, 2],
+            [10, 0]
+          ]
+      }

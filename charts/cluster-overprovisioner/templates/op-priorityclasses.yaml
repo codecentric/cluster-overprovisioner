@@ -1,0 +1,23 @@
+{{- if .Values.op.enabled }}
+{{- if .Values.op.priorityClasses.default.enabled }}
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .Values.op.priorityClasses.default.name }}
+  labels:
+    {{- include "cluster-overprovisioner.labels" . | nindent 4 }}
+value: {{ .Values.op.priorityClasses.default.value }}
+globalDefault: true
+description: "Priority class used by regular pods"
+{{- end }}
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .Values.op.priorityClasses.overprovision.name }}
+  labels:
+    {{- include "cluster-overprovisioner.labels" . | nindent 4 }}
+value: {{ .Values.op.priorityClasses.overprovision.value }}
+globalDefault: false
+description: "Priority class used by overprovisioning deployment"
+{{- end }}

@@ -1,0 +1,76 @@
+{{- if .Values.op.enabled }}
+{{- if .Values.op.rbac.podSecurityPolicy.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "cluster-overprovisioner.op.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.op.labels" . | nindent 4 }}
+rules:
+  - apiGroups: ["policy"]
+    resourceNames: [{{ include "cluster-overprovisioner.op.fullname" . }}]
+    resources: ["podsecuritypolicies"]
+    verbs: ["use"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "cluster-overprovisioner.op.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.op.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cluster-overprovisioner.op.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "cluster-overprovisioner.op.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  name: {{ include "cluster-overprovisioner.op.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.op.labels" . | nindent 4 }}
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  fsGroup:
+{{- if .Values.op.securityContext.runAsNonRoot }}
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+{{- else }}
+    rule: RunAsAny
+{{- end }}
+  readOnlyRootFilesystem: true
+  runAsUser:
+{{- if .Values.op.securityContext.runAsNonRoot }}
+    rule: MustRunAsNonRoot
+{{- else }}
+    rule: RunAsAny
+{{- end }}
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+{{- if .Values.op.securityContext.runAsNonRoot }}
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+{{- else }}
+    rule: RunAsAny
+{{- end }}
+  volumes:
+  {{- if .Values.op.serviceAccount.automountServiceAccountToken }}
+    - secret
+  {{- end }}
+{{- end -}}
+{{- end }}

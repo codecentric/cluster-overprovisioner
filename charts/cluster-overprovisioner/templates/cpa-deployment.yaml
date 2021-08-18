@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cluster-overprovisioner.cpa.fullname" . }}
+  labels:
+    {{- include "cluster-overprovisioner.cpa.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "cluster-overprovisioner.cpa.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.cpa.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cluster-overprovisioner.cpa.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.cpa.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cluster-overprovisioner.cpa.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.cpa.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "cluster-overprovisioner.cpa.name" . }}
+          securityContext:
+            {{- toYaml .Values.cpa.securityContext | nindent 12 }}
+          image: "{{ .Values.cpa.image.repository }}:{{ .Values.cpa.image.tag }}"
+          command:
+            - /cluster-proportional-autoscaler
+            - --target={{ include "cluster-overprovisioner.cpa.target.name" . }}
+            - --namespace={{ include "cluster-overprovisioner.cpa.target.namespace" . }}
+            - --configmap=cas-schedule-active
+            {{- with .Values.cpa.extraArgs}}
+            {{- toYaml . | nindent 12}}
+            {{- end }}
+          imagePullPolicy: {{ .Values.cpa.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.cpa.resources | nindent 12 }}
+          {{- with .Values.cpa.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.cpa.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cpa.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cpa.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cpa.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
