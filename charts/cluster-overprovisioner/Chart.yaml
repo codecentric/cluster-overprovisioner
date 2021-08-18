@@ -2,7 +2,7 @@ apiVersion: v2
 name: cluster-overprovisioner
 description: Helm chart, that enables scheduled scaling of a target resource, intended to be add overprovisioning to an autoscaling k8s cluster.
 type: application
-version: 0.4.8
+version: 0.5.0
 appVersion: "1.16.0"
 keywords:
   - cluster-autoscaler
