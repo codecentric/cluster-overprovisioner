@@ -4,6 +4,8 @@ Helm Chart for overprovisioning an autoscaling Kubernetes Cluster, based on the 
 
 It combines both components into a single solution, so that cluster-size aware and time-dependent overprovisioning can be achieved.
 
+> Note: To read more about our use-case, using this Helm-Chart to speed up your CI/CD jobs, take a look at [our blog post](https://blog.codecentric.de/en/2021/09/ci-cd-jobs-speed-up-in-kubernetes/).
+
 ## Prerequisites
 To use this Chart in your cluster, you need:
 * an autoscaling k8s setup, for example using the [cluster-autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)
