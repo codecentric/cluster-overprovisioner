@@ -110,7 +110,8 @@ For every schedule a cronjob is created, that replaces the active config with th
 | op.serviceAccount.annotations | object | `{}` | Mount ServiceAccount-Token (true, because cpa accesses kube-api)|
 | op.serviceAccount.automountServiceAccountToken | bool | `false` | Annotations to add to the service account |
 | op.serviceAccount.name | string | `""` | Name of the Service Account to use  |
-| op.tolerations | list | `[]` | Tolerations of the cpa Pod |
+| op.tolerations | list | `[]` | Tolerations of the op Pod |
+| op.topologySpreadConstraints | list | `[]` | topologySpreadConstraints of the op Pod |
 | cronJob.failedJobsHistoryLimit | int | `1` | Specifies, how many failed Jobs should be kept |
 | cronJob.image.pullPolicy | string | `"Always"` | ImagePullPolicy |
 | cronJob.image.repository | string | `"ghcr.io/codecentric/cluster-overprovisioner-helper"` | Image used to executed the cronjob |
