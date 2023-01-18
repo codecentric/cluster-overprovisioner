@@ -19,6 +19,7 @@ spec:
       labels:
         {{- include "cluster-overprovisioner.op.selectorLabels" . | nindent 8 }}
     spec:
+      priorityClassName: {{ .Values.op.priorityClasses.overprovision.name }}
       {{- with .Values.op.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -44,6 +45,10 @@ spec:
       {{- end }}
       {{- with .Values.op.tolerations }}
       tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.op.topologySpreadConstraints }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 {{- end }}

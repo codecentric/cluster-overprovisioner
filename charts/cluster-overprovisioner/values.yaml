@@ -122,6 +122,8 @@ op:
 
   affinity: {}
 
+  topologySpreadConstraints: []
+
   priorityClasses:
     default:
       enabled: false
