@@ -74,6 +74,8 @@ op:
     pullPolicy: IfNotPresent
     tag: 3.2
 
+  replicas: null
+
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
