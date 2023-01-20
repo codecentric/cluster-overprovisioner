@@ -6,7 +6,9 @@ metadata:
   labels:
     {{- include "cluster-overprovisioner.op.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  {{- if .Values.op.replicas }}
+  replicas: {{ .Values.op.replicas | int }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "cluster-overprovisioner.op.selectorLabels" . | nindent 6 }}
