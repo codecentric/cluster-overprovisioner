@@ -6,7 +6,7 @@
 {{- $failedJobsHistoryLimit := .Values.cronJob.failedJobsHistoryLimit -}}
 {{- $successfulJobsHistoryLimit := .Values.cronJob.successfulJobsHistoryLimit -}}
 {{- range $schedule := .Values.schedules }}
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: cronjob-cas-{{- $schedule.name }}
