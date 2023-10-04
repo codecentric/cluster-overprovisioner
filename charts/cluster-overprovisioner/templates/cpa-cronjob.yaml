@@ -5,6 +5,7 @@
 {{- $pullPolicy := .Values.cronJob.image.pullPolicy -}}
 {{- $failedJobsHistoryLimit := .Values.cronJob.failedJobsHistoryLimit -}}
 {{- $successfulJobsHistoryLimit := .Values.cronJob.successfulJobsHistoryLimit -}}
+{{- $global := . }}
 {{- range $schedule := .Values.schedules }}
 apiVersion: batch/v1
 kind: CronJob
@@ -37,6 +38,14 @@ spec:
               - name: tmp
                 mountPath: /tmp/
           restartPolicy: Never
+          {{- with $global.Values.cpa.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $global.Values.cpa.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumes:
             - name: script
               configMap:
