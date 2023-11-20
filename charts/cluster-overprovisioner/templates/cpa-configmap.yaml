@@ -14,7 +14,7 @@ data:
   {{- end }}
 ---
 {{- $labels := include "cluster-overprovisioner.cpa.labels" . -}}
-{{- $namespace := .Values.Namespace -}}
+{{- $namespace := .Release.Namespace -}}
 {{- range $schedule := .Values.schedules }}
 {{- if ne (len $schedule.config) 1 }}
 {{ fail (printf "%s%s." "You need to specify exactly one config for schedule " $schedule.name) }}
@@ -32,7 +32,7 @@ data:
 ---
 {{- end }}
 {{- $labels := include "cluster-overprovisioner.labels" . -}}
-{{- $namespace := .Values.Namespace -}}
+{{- $namespace := .Release.Namespace -}}
 {{- range $schedule := .Values.schedules }}
 apiVersion: v1
 kind: ConfigMap
