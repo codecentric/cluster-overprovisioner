@@ -3,9 +3,9 @@
 # Declare variables to be passed into your templates.
 cpa:
   image:
-    repository: k8s.gcr.io/cpa/cluster-proportional-autoscaler
+    repository: registry.k8s.io/cpa/cluster-proportional-autoscaler
     pullPolicy: IfNotPresent
-    tag: 1.8.9
+    tag: v1.8.9
 
   extraArgs:
     - --logtostderr=true
