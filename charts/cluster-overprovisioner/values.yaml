@@ -3,9 +3,9 @@
 # Declare variables to be passed into your templates.
 cpa:
   image:
-    repository: k8s.gcr.io/cpa/cluster-proportional-autoscaler
+    repository: registry.k8s.io/cpa/cluster-proportional-autoscaler
     pullPolicy: IfNotPresent
-    tag: 1.8.5
+    tag: v1.8.9
 
   extraArgs:
     - --logtostderr=true
@@ -158,13 +158,14 @@ defaultConfig:
 # If you want to use the schedule-feature, specify as many schedules as you want.
 # Example of a schedule:
 # - name: night
-#  cronTimeExpression: "0 16 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
-#  config:
-#    ladder:
-#      {
-#        "nodesToReplicas":
-#          [
-#            [0, 0]
-#          ]
-#      }
+#   cronTimeExpression: "0 16 * * 1-5"  # disable overprovisioning Monday - Friday from 6pm
+#   timeZone: America/New_York # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+#   config:
+#     ladder:
+#       {
+#         "nodesToReplicas":
+#           [
+#             [0, 0]
+#           ]
+#       }
 schedules: []

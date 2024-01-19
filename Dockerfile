@@ -1,4 +1,4 @@
-FROM alpine:3.17
+FROM alpine:3.19
 
 RUN apk add yq curl --no-cache
 
