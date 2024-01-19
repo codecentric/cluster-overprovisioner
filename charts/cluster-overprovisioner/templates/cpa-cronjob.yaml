@@ -14,6 +14,9 @@ metadata:
 spec:
   failedJobsHistoryLimit: {{ $failedJobsHistoryLimit }}
   successfulJobsHistoryLimit: {{ $successfulJobsHistoryLimit }}
+  {{- if $schedule.timeZone }}
+  timeZone: {{ $schedule.timeZone | quote }}
+  {{- end }}
   schedule: {{ $schedule.cronTimeExpression | quote }}
   jobTemplate:
     spec:
