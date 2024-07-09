@@ -72,7 +72,7 @@ op:
   image:
     repository: k8s.gcr.io/pause
     pullPolicy: IfNotPresent
-    tag: 3.2
+    tag: 3.9
 
   replicas: null
 
@@ -138,9 +138,9 @@ op:
 
 cronJob:
   image:
-    repository: ghcr.io/codecentric/cluster-overprovisioner-helper
-    pullPolicy: Always
-    tag: latest
+    repository: bitnami/kubectl
+    pullPolicy: IfNotPresent
+    tag: 1.30
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
