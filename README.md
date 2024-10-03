@@ -13,6 +13,7 @@ To use this Chart in your cluster, you need:
 
 ### TL;DR
 ```
+helm repo add codecentric https://codecentric.github.io/cluster-overprovisioner
 helm install codecentric/cluster-overprovisioner
 ```
 
