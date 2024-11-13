@@ -16,7 +16,7 @@ To use this Chart in your cluster, you need:
 helm install codecentric/cluster-overprovisioner
 ```
 
-## Component I: Cluster Proportional Austoscaler
+## Component I: Cluster Proportional Autoscaler
 The Cluster Proportional Autoscaler is used to scale a target ressource based on the cluster size. It is able to consider number of schedulable nodes or number of available cores. It provides two different methods to calculate the desired replica count - `ladder` and `linear`. For further information and examples, please head over to the [official Github repository](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler/tree/master/examples).
 
 ## Component II: Overprovisioning Deployment
