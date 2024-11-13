@@ -12,21 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Build an image from Dockerfile
         run: |
           docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-helper:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-helper:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
+          format: 'sarif'
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
