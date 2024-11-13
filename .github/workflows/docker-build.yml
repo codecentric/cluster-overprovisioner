@@ -46,7 +46,7 @@ jobs:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
           TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db
         with:
-          image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-helper:${{ github.sha }}'
+          image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-helper:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
